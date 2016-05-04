@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.jsoup.Jsoup;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.*;
 import org.springframework.stereotype.*;
@@ -30,15 +31,13 @@ public class Server {
     @RequestMapping("/search")
     @ResponseBody
     public Vector<Map<String, Object>> search(@RequestParam(required=true) String[] qs) throws IOException{
-    	
-    	for (String q : qs ){ System.out.println(q); }
-    	System.out.println();
+    	System.out.println("qs:");
+    	for (String q : qs )
+    		System.out.println(q); 
     	
     	Number[][] search = (new Retrieval("spider")).search(qs);
     	
     	Vector<Map<String, Object>> results = new Vector<Map<String,Object>>();
-    	
-    	System.out.println("search.length: " + search.length);
     	
     	for (int i=0; i<search.length; i++){
     		Integer id = (Integer) search[i][0];
@@ -51,7 +50,7 @@ public class Server {
 			
 			results.add(map);
     	}
-    	System.out.println("done");
+    	System.out.println("done\n");
     	
     	return results;
     }
@@ -60,6 +59,14 @@ public class Server {
     @ResponseBody
     public Vector<Page> getPages() throws IOException{
     	return (new JDBMSpiderDAO()).getAllPages();
+    }
+    
+    @RequestMapping("/pages/{pageId}")
+    @ResponseBody
+    public Page getPageById(@PathVariable int pageId) throws IOException{
+    	Page page = (new JDBMSpiderDAO()).getPageById(pageId);
+    	System.out.println(Jsoup.parse(page.getHTMLContent().replaceAll("&#\\d+;", " ")).text());
+    	return page;
     }
     
     @RequestMapping("/words")

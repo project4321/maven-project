@@ -54,7 +54,7 @@ public class Indexer {
 			
 			//for content
 //			// System.out.println("raw html: " + p.getHTMLContent() + "\n");
-			String html = Jsoup.parse(p.getHTMLContent()).text();
+			String html = Jsoup.parse(p.getHTMLContent().replaceAll("&#\\d+;", " ")).text();
 //			System.out .println("processed html: " + html + "\n");
 			
 			Vector<String> c_wordList = new Vector<String>();
