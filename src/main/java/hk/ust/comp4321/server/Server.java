@@ -34,18 +34,22 @@ public class Server {
     	for (String q : qs ){ System.out.println(q); }
     	System.out.println();
     	
-    	HashMap<Integer, Float> search = (new Retrieval("spider")).search(qs);
+    	Number[][] search = (new Retrieval("spider")).search(qs);
     	
     	Vector<Map<String, Object>> results = new Vector<Map<String,Object>>();
     	
-    	for (Integer id : search.keySet()){
-    		
-    		Map<String, Object> map = new HashMap<String, Object>();
-    		map.put("page", (new JDBMSpiderDAO()).getPageById(id));
-    		map.put("score", search.get(id));
-    		map.put("keywords", getMostSimilarWords(id));
-    		
-    		results.add(map);
+    	System.out.println("search.length: " + search.length);
+    	
+    	for (int i=0; i<search.length; i++){
+    		Integer id = (Integer) search[i][0];
+    		Number score = search[i][1];
+    			
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("page", (new JDBMSpiderDAO()).getPageById(id));
+			map.put("score", score);
+			map.put("keywords", getMostSimilarWords(id));
+			
+			results.add(map);
     	}
     	System.out.println("done");
     	
@@ -61,6 +65,7 @@ public class Server {
     @RequestMapping("/words")
     @ResponseBody
     public String[] getAllWords() throws IOException{
+    	System.out.println("get words");
     	
     	Vector<String> words = (new JDBMIndexerDAO()).getAllWords();
     	Collections.sort(words);

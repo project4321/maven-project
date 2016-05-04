@@ -66,7 +66,7 @@ public class Retrieval {
         }
 	}
 	
-	public HashMap<Integer, Float> search(String[] keywords) throws IOException {
+	public Number [][] search(String[] keywords) throws IOException {
 		String[] keywords2 = keywords;
 		for (int i = 0; i < keywords2.length; i++){
 			StopStem stopStem = new StopStem();
@@ -120,37 +120,31 @@ public class Retrieval {
             }  
         });
         //System.out.println(list);
-        HashMap<Integer, Float> sortedPageIDs = new HashMap<Integer, Float>();
-        for(Map.Entry<Integer, Float> mapping:list){ 
-        	sortedPageIDs.put(mapping.getKey(), mapping.getValue());
-       }
-        for (int i = 1; i <= 300; i++){
-        	if (sortedPageIDs.size() < 50 && !sortedPageIDs.containsKey(i)){
-        		sortedPageIDs.put(i, (float) 0);
-        	}
-        	if (sortedPageIDs.size() >= 50) break;
-        }
-        /*
-        int [] sortedPageIDs = new int[50];
+        Number [][] sortedPageIDs = new Number[50][2];
         int index = 0;
-        for(Map.Entry<Integer, Float> mapping:list){ 
-        	sortedPageIDs[index] = mapping.getKey();
+        while (index < 50){
+        	if (index >= list.size()){
+        		break;
+        	}
+        	sortedPageIDs[index][0] = list.get(index).getKey();
+        	sortedPageIDs[index][1] = list.get(index).getValue();
         	index++;
-       }
+        }
+	
         for (int i = 1; i <= 300; i++){
         	Boolean add = true;
         	for (int j = 0; j < index; j++){
-        		if (sortedPageIDs[j] == i){
+        		if (sortedPageIDs[j][0].intValue() == i){
         			add = false;
         			break;
         		}
         	}
         	if (add && index < 50){
-        		sortedPageIDs[index] = i;
+        		sortedPageIDs[index][0] = i;
+        		sortedPageIDs[index][1] = 0;
         		index++;
         	}
         }
-        */
 		return sortedPageIDs;
 	}
 	
@@ -310,8 +304,11 @@ public class Retrieval {
 	
 	public static void main(String[] args) throws IOException {
 		Retrieval retrieval = new Retrieval("spider");
-		String[] keywords = {"hong kong", "university"};
-		HashMap<Integer, Float> pageID = retrieval.search(keywords);
+		String[] keywords = {"approx", "zhi", "zhuotianlin", "zo"};
+		Number [][] pageID = retrieval.search(keywords);
+		for (int i = 0; i < 50; i++){
+        	System.out.println(pageID[i][0] + " ," + pageID[i][1]);
+        }
 		/*
 		for (int i = 0; i < pageID.length; i++){
 			System.out.println(pageID[i]);
