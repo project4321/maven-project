@@ -31,9 +31,12 @@ public class Server {
     @RequestMapping("/search")
     @ResponseBody
     public Vector<Map<String, Object>> search(@RequestParam(required=true) String[] qs) throws IOException{
-    	System.out.println("qs:");
-    	for (String q : qs )
-    		System.out.println(q); 
+    	System.out.print("qs: [");
+    	for (int i=0; i<qs.length; i++){
+    		System.out.print("\"" + qs[i] + "\"");
+    		if (i < qs.length-1) System.out.print(", ");
+    	}
+    	System.out.println("]");
     	
     	Number[][] search = (new Retrieval("spider")).search(qs);
     	
@@ -50,7 +53,6 @@ public class Server {
 			
 			results.add(map);
     	}
-    	System.out.println("done\n");
     	
     	return results;
     }
@@ -72,8 +74,6 @@ public class Server {
     @RequestMapping("/words")
     @ResponseBody
     public String[] getAllWords() throws IOException{
-    	System.out.println("get words");
-    	
     	Vector<String> words = (new JDBMIndexerDAO()).getAllWords();
     	Collections.sort(words);
 
